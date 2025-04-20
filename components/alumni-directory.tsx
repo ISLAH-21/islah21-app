@@ -127,7 +127,7 @@ export function AlumniDirectory() {
             </Select>
           </div>
 
-          <div className="flex justify-end mt-4">
+          <div className="mt-4 flex justify-end">
             <Button variant="outline" onClick={resetFilters}>
               Reset Filters
             </Button>

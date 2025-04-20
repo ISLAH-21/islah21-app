@@ -105,7 +105,7 @@ export function AlumniTable({ data }: AlumniTableProps) {
           {currentData.map((alumni) => (
             <Card key={alumni.id} className="overflow-hidden">
               <CardContent className="p-0">
-                <div className="p-4 border-b">
+                <div className="border-b p-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
                       <AvatarImage src={alumni.avatar || "/placeholder.svg"} alt={alumni.name} />
@@ -113,15 +113,15 @@ export function AlumniTable({ data }: AlumniTableProps) {
                     </Avatar>
                     <div>
                       <div className="font-medium text-lg">{alumni.name}</div>
-                      <div className="text-sm text-muted-foreground">{alumni.position}</div>
-                      <div className="text-xs text-muted-foreground">{alumni.department}</div>
+                      <div className="text-muted-foreground text-sm">{alumni.position}</div>
+                      <div className="text-muted-foreground text-xs">{alumni.department}</div>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 space-y-3">
+                <div className="space-y-3 p-4">
                   <div>
-                    <div className="text-sm font-medium mb-1">Skills</div>
+                    <div className="mb-1 font-medium text-sm">Skills</div>
                     <div className="flex flex-wrap gap-1">
                       {alumni.skills
                         .slice(0, expandedSkills[alumni.id] ? alumni.skills.length : 3)
@@ -166,14 +166,14 @@ export function AlumniTable({ data }: AlumniTableProps) {
                     </div>
                     <div className="flex items-center gap-1">
                       <Mail className="h-4 w-4 text-muted-foreground" />
-                      <a href={`mailto:${alumni.email}`} className="text-sm text-primary hover:underline truncate">
+                      <a href={`mailto:${alumni.email}`} className="truncate text-primary text-sm hover:underline">
                         {alumni.email}
                       </a>
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-sm font-medium mb-1">Portfolio</div>
+                    <div className="mb-1 font-medium text-sm">Portfolio</div>
                     <div className="flex space-x-1">
                       {alumni.portfolios.map((portfolio, index) => (
                         <TooltipProvider key={index}>
@@ -227,7 +227,7 @@ export function AlumniTable({ data }: AlumniTableProps) {
           </Pagination>
         )}
 
-        <div className="text-sm text-muted-foreground">
+        <div className="text-muted-foreground text-sm">
           Showing {currentData.length} of {data.length} alumni
         </div>
       </div>
@@ -280,8 +280,8 @@ export function AlumniTable({ data }: AlumniTableProps) {
                       </Avatar>
                       <div>
                         <div className="font-medium">{alumni.name}</div>
-                        <div className="text-sm text-muted-foreground">{alumni.position}</div>
-                        <div className="text-xs text-muted-foreground">{alumni.department}</div>
+                        <div className="text-muted-foreground text-sm">{alumni.position}</div>
+                        <div className="text-muted-foreground text-xs">{alumni.department}</div>
                       </div>
                     </div>
                   </TableCell>
@@ -383,7 +383,7 @@ export function AlumniTable({ data }: AlumniTableProps) {
         </Pagination>
       )}
 
-      <div className="text-sm text-muted-foreground">
+      <div className="text-muted-foreground text-sm">
         Showing {currentData.length} of {data.length} alumni
       </div>
     </div>
