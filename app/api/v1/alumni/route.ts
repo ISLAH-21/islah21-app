@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
 		);
 
 		const alumni = await getAlumni();
+		console.log("🚀 ~ GET ~ alumni:", alumni);
 		const filteredAlumni = alumni.filter((record) => {
 			return (
 				record.name.toLowerCase().includes(filters?.name?.toLowerCase()) &&
@@ -28,7 +29,10 @@ export async function GET(request: NextRequest) {
 			page * pageSize,
 		);
 
-		return createSuccessResponse({ data: paginatedalumni });
+		return createSuccessResponse({
+			data: paginatedalumni,
+			pagination: { total: alumni.length, page, pageSize },
+		});
 	} catch (error) {
 		return handleErrorResponse(error, "getAlumni");
 	}
