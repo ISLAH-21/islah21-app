@@ -1,3 +1,4 @@
+import { toCamelCase } from "@/lib/string";
 import { z } from "zod";
 
 const LINKS = [
@@ -51,18 +52,28 @@ export function parseSheetData(data: string[][]) {
 			}
 		});
 
-		// Group social media and others under "links"
 		rowData.links = links;
 
-		// Validate and parse the data using the Zod schema
-		return sheetSchema.parse(rowData); // This will throw an error if invalid
+		return sheetSchema.parse(rowData);
 	});
 }
 
-// Helper to convert headers to camelCase
-function toCamelCase(str: string) {
-	return str
-		.toLowerCase()
-		.replace(/[^a-zA-Z0-9 ]/g, "")
-		.replace(/ (.)/g, (_, c) => c.toUpperCase());
-}
+export const getAlumniSchemaParams = z.object({
+	page: z.coerce // coerce attempts to convert the type (e.g., string from URL to number)
+		.number()
+		.int("Page must be an integer")
+		.min(1, "Page must be at least 1")
+		.optional()
+		.default(1), // Default page is 1 if not provided
+	pageSize: z.coerce
+		.number()
+		.int("PageSize must be an integer")
+		.min(1, "PageSize must be at least 1")
+		.max(100, "PageSize cannot exceed 100") // Add a reasonable max limit
+		.optional()
+		.default(10), // Default page size is 10
+	name: z.string().optional().default(""),
+	skills: z.string().optional().default(""),
+	location: z.string().optional().default(""),
+	company: z.string().optional().default(""),
+});

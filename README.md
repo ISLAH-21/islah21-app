@@ -1,51 +1,44 @@
 # Islah 21
 
-## Features
+## 🚀 Getting Started
 
-- ⚡️ Next.js 14 (App Router)
-- 🎨 AI-generated components via v0
-- 💅 Tailwind CSS
-- 🧱 Component-first architecture
-- 🧪 Built-in testing setup (e.g. Playwright / Vitest optional)
-- 🚀 Ready for deployment (Vercel optimized)
+### Prerequisites
 
-## Getting Started
+Before you begin, ensure you have the following installed:
 
-```bash
-# Clone the repo
-git clone https://github.com/ISLAH-21/islah21-app.git
-cd islah21-app
+- [Node.js (LTS)](https://nodejs.org/en/download) - Currently we used Node.js 22
+- [pnpm](https://pnpm.io/installation)
 
-# Install dependencies
-pnpm install
+### Installation & Setup
 
-# Start dev server
-pnpm dev
-```
+1. **Clone the repository:**
+    ```sh
+    git clone <your-repository-url> # TODO: Replace <your-repository-url>
+    cd islah-21 # Or your project directory name
+    ```
 
-## Scripts
+2. **Install dependencies:**
+    ```sh
+    pnpm install
+    ```
 
-```bash
-pnpm dev       # Start local dev
-pnpm build     # Production build
-pnpm lint      # Linting
-pnpm test      # Run tests (if set up)
-```
+3. **Set up environment variables:**
 
-## Folder Structure
+    Copy the example environment file:
+    ```sh
+    cp .env.example .env
+    ```
+    Open the `.env` file and fill in the required values.
+4. **Running the Development Server** 
 
-```
-/
-├── app/               # Next.js app directory
-│   └── components/    # v0-generated components
-├── public/            # Static assets
-├── styles/            # Global styles (tailwind config, etc.)
-├── tests/             # Test files (if added)
-├── utils/             # Helpers
-├── tsconfig.json
-└── tailwind.config.ts
-```
+    Once dependencies are installed and environment variables are configured, you can start the local development server:
+    ```sh
+    pnpm dev
+    ```
 
-## Deployment
+This command should start the application on http://localhost:3000.
 
-Deploy instantly to [Vercel](https://vercel.com) — just hook up your repo.
+## 🏗️ Building for Production
+
+- Setup environment variables
+- Build and Deploy
