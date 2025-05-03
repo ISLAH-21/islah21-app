@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
 		);
 
 		const alumni = await getAlumni();
-		console.log("🚀 ~ GET ~ alumni:", alumni);
 		const filteredAlumni = alumni.filter((record) => {
 			return (
 				record.name.toLowerCase().includes(filters?.name?.toLowerCase()) &&
