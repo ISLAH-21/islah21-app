@@ -8,6 +8,7 @@ const envSchema = z.object({
 		.string()
 		.transform((val) => val.split(",").map((s) => s.trim())),
 	GOOGLE_SPREADSHEET_SHEET_NAME: z.string(),
+	REVALIDATE_ID: z.string(),
 });
 
 export const ENV = envSchema.parse(process.env);

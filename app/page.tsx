@@ -1,4 +1,5 @@
 import { AlumniDirectory } from "@/components/alumni-directory";
+import { CACHE_KEY } from "@/lib/constants";
 import {
 	type GetAlumniSchemaParams,
 	getAlumniSchemaParams,
@@ -36,10 +37,14 @@ const getAlumniList = async ({ params }: { params: GetAlumniSchemaParams }) => {
 	};
 };
 
-const getAlumniListCached = unstable_cache(getAlumniList, ["alumni-list"], {
-	revalidate: 3600,
-	tags: ["alumni-list"],
-});
+const getAlumniListCached = unstable_cache(
+	getAlumniList,
+	[CACHE_KEY.alumniList],
+	{
+		revalidate: 3600,
+		tags: [CACHE_KEY.alumniList],
+	},
+);
 
 export default async function Home({
 	params,
