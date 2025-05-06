@@ -31,3 +31,7 @@ next-env.d.ts
 
 # ide
 .vscode
+
+# opennext
+.open-next
+.wrangler

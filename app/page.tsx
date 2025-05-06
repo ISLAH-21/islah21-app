@@ -1,11 +1,61 @@
-import { AlumniDirectory } from "@/components/alumni-directory"
+import { AlumniDirectory } from "@/components/alumni-directory";
+import {
+	type GetAlumniSchemaParams,
+	getAlumniSchemaParams,
+} from "@/services/alumni/alumni-schema";
+import { getAlumni } from "@/services/alumni/get-alumni";
 
-export default function Home() {
-  return (
-    <main className="container mx-auto px-4 py-8">
-      <h1 className="mb-2 font-bold text-3xl">Alumni Directory</h1>
-      <p className="mb-8 text-muted-foreground">Search and filter our school alumni network</p>
-      <AlumniDirectory />
-    </main>
-  )
+const getAlumniList = async ({ params }: { params: GetAlumniSchemaParams }) => {
+	const safeParams = getAlumniSchemaParams.safeParse(params);
+
+	if (safeParams.error) {
+		return {
+			data: [],
+			pagination: { total: 0, page: 1, pageSize: 10 },
+		};
+	}
+
+	const { page, pageSize, ...filters } = safeParams.data;
+
+	const alumni = await getAlumni();
+	const filteredAlumni = alumni.filter((record) => {
+		return (
+			record.name.toLowerCase().includes(filters?.name?.toLowerCase()) &&
+			record.skills.some((skill) =>
+				skill.toLowerCase().includes(filters?.skills?.toLowerCase()),
+			) &&
+			record.address.toLowerCase().includes(filters?.location?.toLowerCase()) &&
+			record.company.toLowerCase().includes(filters?.company?.toLowerCase())
+		);
+	});
+
+	const paginatedalumni = filteredAlumni.slice(
+		(page - 1) * pageSize,
+		page * pageSize,
+	);
+
+	return {
+		data: paginatedalumni,
+		pagination: { total: alumni.length, page, pageSize },
+	};
+};
+
+export default async function Home({
+	params,
+}: {
+	params: Promise<GetAlumniSchemaParams>;
+}) {
+	const queryParams = await params;
+	const paginatedalumni = await getAlumniList({ params: queryParams });
+
+	return (
+		<main className="container mx-auto px-4 py-8">
+			<h1 className="mb-2 font-bold text-3xl">Alumni Directory</h1>
+			<p className="mb-8 text-muted-foreground">
+				Search and filter our school alumni network
+			</p>
+			<pre>{JSON.stringify(paginatedalumni, null, 2)}</pre>
+			<AlumniDirectory />
+		</main>
+	);
 }

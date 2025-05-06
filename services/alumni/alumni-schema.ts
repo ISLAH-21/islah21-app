@@ -77,3 +77,5 @@ export const getAlumniSchemaParams = z.object({
 	location: z.string().optional().default(""),
 	company: z.string().optional().default(""),
 });
+
+export type GetAlumniSchemaParams = z.infer<typeof getAlumniSchemaParams>;
