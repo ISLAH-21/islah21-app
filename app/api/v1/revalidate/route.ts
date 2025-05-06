@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
 	const tag = request.nextUrl.searchParams.get("tag");
 	const id = request.nextUrl.searchParams.get("id");
 
-	if (!tag || !!CACHE_KEYS.includes(tag) || !id || id !== ENV.REVALIDATE_ID) {
+	if (!tag || !CACHE_KEYS.includes(tag) || !id || id !== ENV.REVALIDATE_ID) {
 		return Response.json({ revalidated: false }, { status: 400 });
 	}
 
