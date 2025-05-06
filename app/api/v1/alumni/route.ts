@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 				record.skills.some((skill) =>
 					skill.toLowerCase().includes(filters?.skills?.toLowerCase()),
 				) &&
-				record.address
+				record.domicile
 					.toLowerCase()
 					.includes(filters?.location?.toLowerCase()) &&
 				record.company.toLowerCase().includes(filters?.company?.toLowerCase())

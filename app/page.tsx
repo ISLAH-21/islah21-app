@@ -11,7 +11,6 @@ const getAlumniList = async ({ params }: { params: GetAlumniSchemaParams }) => {
 	if (safeParams.error) {
 		return {
 			data: [],
-			pagination: { total: 0, page: 1, pageSize: 10 },
 		};
 	}
 
@@ -24,19 +23,15 @@ const getAlumniList = async ({ params }: { params: GetAlumniSchemaParams }) => {
 			record.skills.some((skill) =>
 				skill.toLowerCase().includes(filters?.skills?.toLowerCase()),
 			) &&
-			record.address.toLowerCase().includes(filters?.location?.toLowerCase()) &&
+			record.domicile
+				.toLowerCase()
+				.includes(filters?.location?.toLowerCase()) &&
 			record.company.toLowerCase().includes(filters?.company?.toLowerCase())
 		);
 	});
 
-	const paginatedalumni = filteredAlumni.slice(
-		(page - 1) * pageSize,
-		page * pageSize,
-	);
-
 	return {
-		data: paginatedalumni,
-		pagination: { total: alumni.length, page, pageSize },
+		data: filteredAlumni,
 	};
 };
 
@@ -46,7 +41,7 @@ export default async function Home({
 	params: Promise<GetAlumniSchemaParams>;
 }) {
 	const queryParams = await params;
-	const paginatedalumni = await getAlumniList({ params: queryParams });
+	const { data: alumni } = await getAlumniList({ params: queryParams });
 
 	return (
 		<main className="container mx-auto px-4 py-8">
@@ -54,8 +49,7 @@ export default async function Home({
 			<p className="mb-8 text-muted-foreground">
 				Search and filter our school alumni network
 			</p>
-			<pre>{JSON.stringify(paginatedalumni, null, 2)}</pre>
-			<AlumniDirectory />
+			<AlumniDirectory alumni={alumni} />
 		</main>
 	);
 }
