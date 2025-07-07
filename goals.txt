@@ -1,0 +1,12 @@
+- Main function: tempat cari informasi soal anak angkatan
+- What info that needed the most selain nama
+- Some info bound to change a lot, constant update close to impossible (ngisi form berulang bothersome)
+- 
+
+Features:
+- Directory:
+ - search bar
+ - filter?
+  - ikhwan / akhwat?
+  - 
+ - pagination
