@@ -1,11 +1,8 @@
 {
   "compilerOptions": {
-    "baseUrl": "app/",
+    "baseUrl": ".",
     "paths": {
-      "@/components/*": ["components/*"],
-      "@/hooks/*": ["hooks/*"],
-      "@/lib/*": ["lib/*"],
-      "@/services/*": ["services/*"]
+      "@/*": ["./*"],
     },
     "target": "ES2017",
     "lib": [

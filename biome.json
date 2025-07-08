@@ -1,12 +1,18 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
     "useIgnoreFile": false
   },
   "files": {
-    "includes": ["app/**/*.{ts,tsx,css}", "components/**/*.{ts,tsx}", "lib/**/*.{ts,tsx}", "hooks/**/*.{ts,tsx}", "services/**/*.{ts,tsx}"],
+    "includes": [
+      "app/**/*.{ts,tsx}",
+      "components/**/*.{ts,tsx}",
+      "lib/**/*.{ts,tsx}",
+      "hooks/**/*.{ts,tsx}",
+      "services/**/*.{ts,tsx}"
+    ],
     "ignoreUnknown": false
   },
   "formatter": {
