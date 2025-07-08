@@ -7,11 +7,7 @@
   },
   "files": {
     "includes": [
-      "app/**/*.{ts,tsx}",
-      "components/**/*.{ts,tsx}",
-      "lib/**/*.{ts,tsx}",
-      "hooks/**/*.{ts,tsx}",
-      "services/**/*.{ts,tsx}"
+      "src/**/*.{ts,tsx}"
     ],
     "ignoreUnknown": false
   },

@@ -6,11 +6,34 @@ export const generateFakeData = (): Omit<Alumni, "id"> => {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
 
+  const operatorPrefix = faker.helpers.arrayElement([
+    "811",
+    "812",
+    "813",
+    "821",
+    "822",
+    "823",
+    "831",
+    "832",
+    "833",
+    "851",
+    "852",
+    "853",
+    "871",
+    "872",
+    "873",
+    "881",
+    "882",
+    "883",
+  ]);
+
+  const phone = `+62${operatorPrefix}${faker.string.numeric(faker.number.int({ min: 7, max: 10 }))}`;
+
   const user: Omit<Alumni, "id"> = {
     name: `${firstName} ${lastName}`,
     job: faker.person.jobTitle(),
     email: faker.internet.email({ firstName, lastName }),
-    phone: faker.phone.number(),
+    phone,
     avatar: faker.image.avatar(),
   };
 

@@ -1,13 +1,5 @@
 import AlumniSearchBar from "@/components/alumniSearchBar";
 import AlumniTable from "@/components/alumniTable";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Islah21 Alumni Directory",
-  description: "Official alumni directory of Islah21",
-  keywords: "Islah21, alumni, directory",
-  authors: { name: "Hengker" },
-};
 
 export default function Page() {
   return (

@@ -7,6 +7,4 @@ Features:
 - Directory:
  - search bar
  - filter?
-  - ikhwan / akhwat?
-  - 
  - pagination
