@@ -5,7 +5,7 @@ export interface SocialMedia {
   instagram?: string;
 }
 
-export interface Alumni {
+export interface AlumniProps {
   id: number;
   name: string;
   job: string;

@@ -1,8 +1,8 @@
-import type { Alumni } from "@/lib/types";
+import type { AlumniProps } from "@/lib/types";
 import { faker } from "@faker-js/faker";
 import { NextResponse } from "next/server";
 
-export const generateFakeData = (): Omit<Alumni, "id"> => {
+export const generateFakeData = (): Omit<AlumniProps, "id"> => {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
 
@@ -29,7 +29,7 @@ export const generateFakeData = (): Omit<Alumni, "id"> => {
 
   const phone = `+62${operatorPrefix}${faker.string.numeric(faker.number.int({ min: 7, max: 10 }))}`;
 
-  const user: Omit<Alumni, "id"> = {
+  const user: Omit<AlumniProps, "id"> = {
     name: `${firstName} ${lastName}`,
     job: faker.person.jobTitle(),
     email: faker.internet.email({ firstName, lastName }),
