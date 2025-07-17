@@ -34,13 +34,15 @@ export const generateFakeData = (): Omit<AlumniProps, "id"> => {
     job: faker.person.jobTitle(),
     email: faker.internet.email({ firstName, lastName }),
     phone,
-    avatar: faker.image.avatar(),
+    ...(faker.datatype.boolean(0.9) && {
+      avatar: faker.image.avatar(),
+    }),
   };
 
-  if (faker.datatype.boolean(0.7)) {
+  if (faker.datatype.boolean(0.95)) {
     user.socialMedia = {
       ...(faker.datatype.boolean(0.6) && {
-        twitter: `https://twitter.com/${faker.internet.username({ firstName, lastName })}`,
+        x: `https://x.com/${faker.internet.username({ firstName, lastName })}`,
       }),
       ...(faker.datatype.boolean(0.8) && {
         linkedin: `https://linkedin.com/in/${faker.internet.username({ firstName, lastName })}`,
@@ -48,8 +50,11 @@ export const generateFakeData = (): Omit<AlumniProps, "id"> => {
       ...(faker.datatype.boolean(0.5) && {
         github: `https://github.com/${faker.internet.username({ firstName, lastName })}`,
       }),
-      ...(faker.datatype.boolean(0.4) && {
+      ...(faker.datatype.boolean(0.9) && {
         instagram: `https://instagram.com/${faker.internet.username({ firstName, lastName })}`,
+      }),
+      ...(faker.datatype.boolean(0.8) && {
+        facebook: `https://facebook.com/${faker.internet.username({ firstName, lastName })}`,
       }),
     };
   }

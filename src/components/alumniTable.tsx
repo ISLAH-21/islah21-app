@@ -3,10 +3,12 @@
 import type { AlumniProps } from "@/lib/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
-import Facebook from "./icons/logos:facebook.svg";
-import Github from "./icons/simple-icons:github.svg";
-import Instagram from "./icons/skill-icons:instagram.svg";
+import Facebook from "./icons/fa6-brands:facebook-f.svg";
+import Instagram from "./icons/fa6-brands:instagram.svg";
+import LinkedIn from "./icons/fa6-brands:linkedin-in.svg";
+import WhatsApp from "./icons/fa6-brands:whatsapp.svg";
+import X from "./icons/fa6-brands:x-twitter.svg";
+import Email from "./icons/fa6-regular:envelope.svg";
 
 export default function AlumniTable() {
   const [alumni, setAlumni] = useState([]);
@@ -37,58 +39,79 @@ export default function AlumniTable() {
       {alumni.map((alumni) => (
         <div
           key={alumni.id}
-          className="flex items-center gap-x-4 rounded-md border p-2 text-[13px] leading-none"
+          className="flex items-center gap-x-3 rounded-md border p-2 text-[11px] leading-[1.2] md:gap-x-4 md:text-[13px]"
         >
           {alumni.avatar ? (
             <Image
               src={alumni.avatar}
               alt={alumni.name}
-              className="h-10 w-10 rounded-full"
+              className="size-8 rounded-full md:size-10"
               width={40}
               height={40}
             />
           ) : (
-            <div className="h-10 w-10 rounded-full bg-slate-300" />
+            <span className="h-8 max-w-8 rounded-full bg-slate-300 md:h-10 md:w-full md:max-w-10" />
           )}
-          <div className="flex w-full max-w-45 flex-col justify-center whitespace-nowrap">
-            <p className="truncate font-semibold text-sm">{alumni.name}</p>
+          <div className="-space-y-0.5 flex w-full max-w-40 flex-col justify-center whitespace-nowrap md:max-w-50">
+            <p className="truncate font-semibold text-xs md:text-sm">
+              {alumni.name}
+            </p>
             <p className="truncate text-slate-500">{alumni.job}</p>
           </div>
-          <hr className="mx-1 h-3/4 w-[0.5px] bg-slate-300" />
-          <p className="w-fit min-w-0 max-w-55 flex-1 justify-center whitespace-nowrap text-slate-700">
-            {alumni.email}
-          </p>
-          <hr className="mx-1 h-3/4 w-[0.5px] bg-slate-300" />
-          <p className="w-fit min-w-0 max-w-45 flex-1 justify-center whitespace-nowrap text-slate-700">
-            {alumni.phone}
-          </p>
-          <hr className="mx-1 h-3/4 w-[0.5px] bg-slate-300" />
+
+          <div className="flex w-full max-w-40 flex-col justify-center gap-y-0.5 md:max-w-50 ">
+            <a
+              className="flex min-w-0 items-center gap-x-2 text-slate-700"
+              href={`mailto:${alumni.email}`}
+            >
+              <Email className="size-3 shrink-0 text-slate-500" />
+              <span className="truncate whitespace-nowrap">{alumni.email}</span>
+            </a>
+            <a
+              className="flex min-w-0 items-center gap-x-1.75 text-slate-700"
+              target="_blank"
+              href={`https://wa.me/${alumni.phone}`}
+            >
+              <WhatsApp className="size-3.25 shrink-0 text-slate-500 " />
+              <span className="truncate whitespace-nowrap">{alumni.phone}</span>
+            </a>
+          </div>
+
           <div className="mr-1 ml-auto flex items-center gap-x-1.5">
             {alumni.socialMedia?.facebook && (
               <a
-                className="flex size-8 items-center justify-center rounded-md bg-[#1877F2] hover:cursor-pointer"
+                className={`flex size-6 items-end justify-center rounded-full border border-slate-500 hover:cursor-pointer md:size-8 md:border-[1.5px]`}
                 target="_blank"
                 href={alumni.socialMedia?.facebook}
               >
-                <Facebook />
+                <Facebook className="size-4 text-slate-500 md:size-5.5" />
               </a>
             )}
-            {alumni.socialMedia?.github && (
+            {alumni.socialMedia?.x && (
               <a
-                className="flex size-8 items-center justify-center rounded-md bg-[#0F172B] hover:cursor-pointer"
+                className={`flex size-6 items-center justify-center rounded-full border border-slate-500 hover:cursor-pointer md:size-8 md:border-[1.5px]`}
                 target="_blank"
-                href={alumni.socialMedia?.github}
+                href={alumni.socialMedia?.x}
               >
-                <Github className="z-1 size-6 text-white" />
+                <X className="size-3 text-slate-500 md:size-4.5" />
               </a>
             )}
             {alumni.socialMedia?.instagram && (
               <a
-                className="flex size-8 items-center justify-center rounded-sm hover:cursor-pointer"
+                className="flex size-6 items-center justify-center rounded-full border border-slate-500 hover:cursor-pointer md:size-8 md:border-[1.5px]"
                 target="_blank"
                 href={alumni.socialMedia?.instagram}
               >
-                <Instagram />
+                <Instagram className="size-3.5 text-slate-500 md:size-5" />
+              </a>
+            )}
+            {alumni.socialMedia?.linkedin && (
+              <a
+                className="flex size-6 items-center justify-center rounded-full border border-slate-500 hover:cursor-pointer md:size-8 md:border-[1.5px]"
+                target="_blank"
+                href={alumni.socialMedia?.linkedin}
+              >
+                <LinkedIn className="size-3 text-slate-500 md:size-4.5" />
               </a>
             )}
           </div>

@@ -4,7 +4,7 @@ import { Input } from "@base-ui-components/react/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
-import { MynauiSearch } from "./icons/MynauiSearch";
+import SearchIcon from "./icons/mynaui:search.svg";
 
 interface AlumniSearchBarProps {
   placeholder: string;
@@ -38,7 +38,6 @@ export default function AlumniSearchBar({ placeholder }: AlumniSearchBarProps) {
       <label htmlFor="search" className="sr-only">
         Search
       </label>
-      <MynauiSearch className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-3 text-slate-500" />
       <Input
         placeholder={placeholder}
         className="peer block w-full rounded-md border border-slate-200 py-2 pl-9 text-sm caret-slate-600 placeholder:text-slate-500 focus-visible:outline-[1.5px] focus-visible:outline-slate-600"
@@ -49,6 +48,7 @@ export default function AlumniSearchBar({ placeholder }: AlumniSearchBarProps) {
           setSearchTerm(newValue);
         }}
       />
+      <SearchIcon className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-2.5 size-5 text-slate-500 peer-focus-visible:text-slate-800" />
     </div>
   );
 }
