@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { DM_Sans } from "next/font/google";
+import { DM_Sans, Inter } from "next/font/google";
 
 import "./global.css";
 
-const dm_sans = DM_Sans({
+const _dm_sans = DM_Sans({
+  subsets: ["latin"],
+});
+
+const inter = Inter({
   subsets: ["latin"],
 });
 
@@ -23,7 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dm_sans.className} antialiased`}
+      className={`${inter.className} antialiased`}
       suppressHydrationWarning
     >
       <body>
