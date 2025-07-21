@@ -32,6 +32,7 @@ export const generateFakeData = (): Omit<AlumniProps, "id"> => {
   const user: Omit<AlumniProps, "id"> = {
     name: `${firstName} ${lastName}`,
     job: faker.person.jobTitle(),
+    residence: faker.location.city(),
     email: faker.internet.email({ firstName, lastName }),
     phone,
     ...(faker.datatype.boolean(0.9) && {
@@ -55,6 +56,9 @@ export const generateFakeData = (): Omit<AlumniProps, "id"> => {
       }),
       ...(faker.datatype.boolean(0.8) && {
         facebook: `https://facebook.com/${faker.internet.username({ firstName, lastName })}`,
+      }),
+      ...(faker.datatype.boolean(0.5) && {
+        behance: `https://behance.net/${faker.internet.username({ firstName, lastName })}`,
       }),
     };
   }
