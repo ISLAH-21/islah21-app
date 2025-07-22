@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { DM_Sans, Inter } from "next/font/google";
+import Providers from "./../components/providers";
 
 import "./global.css";
 
@@ -32,7 +33,9 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider attribute="class" enableSystem={false}>
-          <div className="root">{children}</div>
+          <Providers>
+            <div className="root">{children}</div>
+          </Providers>
         </ThemeProvider>
       </body>
     </html>
