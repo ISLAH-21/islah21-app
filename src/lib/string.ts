@@ -5,6 +5,12 @@ export function toCamelCase(str: string) {
     .replace(/ (.)/g, (_, c) => c.toUpperCase());
 }
 
+export function toTitleCase(str: string) {
+  return str
+    .replace(/[-_]/g, "")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 export function getInitials(name) {
   if (!name || typeof name !== "string") return "";
   return name

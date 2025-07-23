@@ -2,6 +2,7 @@
 
 import { Input } from "@base-ui-components/react/input";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import SearchIcon from "./icons/mynaui:search.svg";
 
@@ -14,6 +15,14 @@ export default function AlumniSearchBar({ placeholder }: AlumniSearchBarProps) {
   const pathname = usePathname();
   const { replace } = useRouter();
 
+  const [searchValue, setSearchValue] = useState(
+    searchParams.get("search_query") || "",
+  );
+
+  useEffect(() => {
+    setSearchValue(searchParams.get("search_query") || "");
+  }, [searchParams]);
+
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams);
     if (term) {
@@ -22,7 +31,14 @@ export default function AlumniSearchBar({ placeholder }: AlumniSearchBarProps) {
       params.delete("search_query");
     }
     replace(`${pathname}?${params.toString()}`);
-  }, 0);
+  }, 300);
+
+  function _clearSearch() {
+    const params = new URLSearchParams(searchParams);
+    params.delete("search_query");
+    params.delete("page");
+    replace(`${pathname}?${params.toString()}`);
+  }
 
   return (
     <div className="relative flex flex-1 shrink-0">
@@ -32,9 +48,10 @@ export default function AlumniSearchBar({ placeholder }: AlumniSearchBarProps) {
       <Input
         placeholder={placeholder}
         className="peer block w-full rounded-md border border-slate-200 py-2 pl-9 text-sm caret-slate-600 placeholder:text-slate-500 focus-visible:outline-[1.5px] focus-visible:outline-slate-600"
-        value={searchParams.get("search_query") || ""}
+        value={searchValue}
         onChange={(e) => {
           const newValue = e.target.value;
+          setSearchValue(newValue);
           handleSearch(newValue);
         }}
       />

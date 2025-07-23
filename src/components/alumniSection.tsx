@@ -1,20 +1,16 @@
 "use client";
 
+import { useMobile } from "@/hooks/use-mobile";
+import type { AlumniProps } from "@/lib/types";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import AlumniSearchBar from "./alumniSearchBar";
 import AlumniTable from "./alumniTable";
+import PreviousPageIcon from "./icons/mynaui:chevron-left.svg";
+import NextPageIcon from "./icons/mynaui:chevron-right.svg";
 
-async function fetchAlumni({ queryKey }: { queryKey: (string | number)[] }) {
-  const [_key, page, search_query] = queryKey;
-  const params = new URLSearchParams({
-    count: "12",
-    page: String(page),
-  });
-
-  if (search_query) params.set("search_query", String(search_query));
-
-  const res = await fetch(`/api/alumni?${params.toString()}`);
+async function fetchAllAlumni(): Promise<AlumniProps[]> {
+  const res = await fetch(`/api/alumni`);
   if (!res.ok) throw new Error("Failed to fetch alumni");
   return res.json();
 }
@@ -23,15 +19,52 @@ export default function AlumniSection() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
+
+  const isMobile = useMobile();
+
   const query = searchParams.get("search_query") || "";
-
   const page = Number(searchParams.get("page") || "1");
+  const count = isMobile ? 6 : 12;
 
-  const { data, isLoading, isError, error, isFetching } = useQuery({
+  const {
+    data: allAlumni,
+    isLoading,
+    isError,
+    error,
+    isFetching,
+  } = useQuery({
     queryKey: ["alumni", page, query],
-    queryFn: fetchAlumni,
+    queryFn: fetchAllAlumni,
     placeholderData: keepPreviousData,
   });
+
+  if (!allAlumni) return null;
+
+  const normalizedQuery = query.toLowerCase().trim();
+  let filteredAlumni = allAlumni;
+
+  if (normalizedQuery) {
+    filteredAlumni = allAlumni.filter((alumni) => {
+      alumni.name.toLowerCase().includes(normalizedQuery) ||
+        alumni.job?.toLowerCase().includes(normalizedQuery) ||
+        alumni.email?.toLowerCase().includes(normalizedQuery) ||
+        alumni.residence?.toLowerCase().includes(normalizedQuery);
+    });
+  }
+
+  const startIndex = (page - 1) * count;
+  const endIndex = startIndex + count;
+  const paginatedAlumni = filteredAlumni.slice(startIndex, endIndex);
+  const hasMore = endIndex < filteredAlumni.length;
+  const totalPages = Math.ceil(filteredAlumni.length / count);
+
+  const processedData = {
+    users: paginatedAlumni,
+    currentPage: page,
+    totalPages,
+    hasMore,
+    isFiltered: Boolean(normalizedQuery),
+  };
 
   function goTo(newPage: number) {
     const params = new URLSearchParams(searchParams);
@@ -39,15 +72,6 @@ export default function AlumniSection() {
     else params.delete("page");
     replace(`${pathname}?${params.toString()}`);
   }
-
-  function _clearSearch() {
-    const params = new URLSearchParams(searchParams);
-    params.delete("search_query");
-    params.delete("page");
-    replace(`${pathname}?${params.toString()}`);
-  }
-
-  const hasSearchQuery = Boolean(query.trim());
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error.message}</div>;
@@ -67,32 +91,29 @@ export default function AlumniSection() {
           </div>
           <AlumniSearchBar placeholder="Cari nama alumni" />
         </div>
-        <AlumniTable alumni={data.users} />
+        <AlumniTable alumni={processedData.users} />
       </div>
       <div className="flex w-full items-center justify-center gap-2 py-4 text-sm">
         <button
           onClick={() => goTo(page - 1)}
           disabled={page === 1 || isFetching}
-          className="rounded-md px-3 py-1 ring ring-slate-300"
+          className="rounded-[3px] p-1 ring ring-slate-300 hover:cursor-pointer"
           type="button"
         >
-          Prev
+          <PreviousPageIcon className="size-5 text-slate-500" />
         </button>
         <span className="px-2">
-          Page {page} of {data.totalPages || 1}
-          {hasSearchQuery && ` (${data.totalResults} results)`}
+          Page {page} of {processedData.totalPages || 1}
         </span>
         <button
           onClick={() => goTo(page + 1)}
-          disabled={!data.hasMore || isFetching}
-          className="rounded-md px-3 py-1 ring ring-slate-300"
+          disabled={!processedData.hasMore || isFetching}
+          className="rounded-[3px] p-1 ring ring-slate-300 hover:cursor-pointer"
           type="button"
         >
-          Next
+          <NextPageIcon className="size-5 text-slate-500" />
         </button>
       </div>
-
-      {/* {isFetching && <div className="text-sm">Updating...</div>} */}
     </section>
   );
 }

@@ -1,3 +1,4 @@
+import { toTitleCase } from "@/lib/string";
 import ALumniSocialLink from "./alumniSocialLink";
 import BehanceIcon from "./icons/fa6-brands:behance.svg";
 import FacebookIcon from "./icons/fa6-brands:facebook-f.svg";
@@ -10,37 +11,37 @@ import WebsiteIcon from "./icons/mynaui:globe.svg";
 export default function AlumniSocial({ alumni }) {
   const links = [
     {
-      key: "instagram",
+      key: "Instagram",
       href: alumni.socialMedia?.instagram,
       Icon: InstagramIcon,
       iconClassName: "size-5",
     },
     {
-      key: "x",
+      key: "X",
       href: alumni.socialMedia?.x,
       Icon: XIcon,
       iconClassName: "size-4.5",
     },
     {
-      key: "github",
+      key: "Github",
       href: alumni.socialMedia?.github,
       Icon: GithubIcon,
       iconClassName: "size-5",
     },
     {
-      key: "linkedin",
+      key: "LinkedIn",
       href: alumni.socialMedia?.linkedin,
       Icon: LinkedInIcon,
       iconClassName: "size-4.5",
     },
     {
-      key: "behance",
+      key: "Behance",
       href: alumni.socialMedia?.behance,
       Icon: BehanceIcon,
       iconClassName: "size-5",
     },
     {
-      key: "facebook",
+      key: "Facebook",
       href: alumni.socialMedia?.facebook,
       className: "items-end",
       Icon: FacebookIcon,
@@ -54,6 +55,7 @@ export default function AlumniSocial({ alumni }) {
         {links.map(({ key, href, className, Icon, iconClassName }) => (
           <ALumniSocialLink
             key={key}
+            title={toTitleCase(key)}
             href={href}
             Icon={Icon}
             className={className}
@@ -63,6 +65,7 @@ export default function AlumniSocial({ alumni }) {
         {alumni.personalSite && (
           <ALumniSocialLink
             href={alumni.personalSite}
+            title="Website"
             Icon={WebsiteIcon}
             iconClassName="size-5.5"
           />

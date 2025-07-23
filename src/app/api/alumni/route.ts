@@ -80,41 +80,8 @@ export const generateFakeUsers = (): AlumniProps[] => {
   }));
 };
 
-const ALL_ALUMNI: AlumniProps[] = generateFakeUsers();
+export async function GET() {
+  const users = generateFakeUsers();
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const count = parseInt(searchParams.get("count") ?? "12", 10);
-  const page = parseInt(searchParams.get("page") ?? "1", 10);
-  const searchQuery = searchParams.get(
-    "search_query"?.toLowerCase().trim() || "",
-  );
-
-  let filteredAlumni: AlumniProps[] = ALL_ALUMNI;
-
-  if (searchQuery) {
-    filteredAlumni = ALL_ALUMNI.filter(
-      (alumni) =>
-        alumni.name.toLowerCase().includes(searchQuery) ||
-        alumni.job?.toLowerCase().includes(searchQuery) ||
-        alumni.email?.toLowerCase().includes(searchQuery) ||
-        alumni.residence?.toLowerCase().includes(searchQuery),
-    );
-  }
-
-  const startIndex = (page - 1) * count;
-  const endIndex = startIndex + count;
-  const paginatedAlumni = filteredAlumni.slice(startIndex, endIndex);
-  const hasMore = endIndex < filteredAlumni.length;
-  const totalPages = Math.ceil(filteredAlumni.length / count);
-
-  return NextResponse.json({
-    users: paginatedAlumni,
-    hasMore,
-    totalResults: filteredAlumni.length,
-    totalPages,
-    currentPage: page,
-    resultsPerPage: count,
-    isFiltered: Boolean(searchQuery),
-  });
+  return NextResponse.json(users);
 }
