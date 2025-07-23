@@ -1,5 +1,6 @@
 import { toTitleCase } from "@/lib/string";
-import ALumniSocialLink from "./alumniSocialLink";
+import type { SocialMedia } from "@/lib/types";
+import ALumniSocialLink from "./alumni-social-link";
 import BehanceIcon from "./icons/fa6-brands:behance.svg";
 import FacebookIcon from "./icons/fa6-brands:facebook-f.svg";
 import GithubIcon from "./icons/fa6-brands:github.svg";
@@ -8,41 +9,49 @@ import LinkedInIcon from "./icons/fa6-brands:linkedin-in.svg";
 import XIcon from "./icons/fa6-brands:x-twitter.svg";
 import WebsiteIcon from "./icons/mynaui:globe.svg";
 
-export default function AlumniSocial({ alumni }) {
+interface AlumniSocialProps {
+  socialMedia?: SocialMedia;
+  personalSite?: string;
+}
+
+export default function AlumniSocial({
+  socialMedia,
+  personalSite,
+}: AlumniSocialProps) {
   const links = [
     {
       key: "Instagram",
-      href: alumni.socialMedia?.instagram,
+      href: socialMedia?.instagram,
       Icon: InstagramIcon,
       iconClassName: "size-5",
     },
     {
       key: "X",
-      href: alumni.socialMedia?.x,
+      href: socialMedia?.x,
       Icon: XIcon,
       iconClassName: "size-4.5",
     },
     {
       key: "Github",
-      href: alumni.socialMedia?.github,
+      href: socialMedia?.github,
       Icon: GithubIcon,
       iconClassName: "size-5",
     },
     {
       key: "LinkedIn",
-      href: alumni.socialMedia?.linkedin,
+      href: socialMedia?.linkedin,
       Icon: LinkedInIcon,
       iconClassName: "size-4.5",
     },
     {
       key: "Behance",
-      href: alumni.socialMedia?.behance,
+      href: socialMedia?.behance,
       Icon: BehanceIcon,
       iconClassName: "size-5",
     },
     {
       key: "Facebook",
-      href: alumni.socialMedia?.facebook,
+      href: socialMedia?.facebook,
       className: "items-end",
       Icon: FacebookIcon,
       iconClassName: "size-5.5",
@@ -62,9 +71,9 @@ export default function AlumniSocial({ alumni }) {
             iconClassName={iconClassName}
           />
         ))}
-        {alumni.personalSite && (
+        {personalSite && (
           <ALumniSocialLink
-            href={alumni.personalSite}
+            href={personalSite}
             title="Website"
             Icon={WebsiteIcon}
             iconClassName="size-5.5"

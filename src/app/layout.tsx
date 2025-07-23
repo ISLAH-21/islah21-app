@@ -1,21 +1,17 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { DM_Sans, Inter } from "next/font/google";
-import Providers from "./../components/providers";
+import { Inter } from "next/font/google";
+import Providers from "../components/providers/tanstack-providers";
 
 import "./global.css";
-
-const _dm_sans = DM_Sans({
-  subsets: ["latin"],
-});
 
 const inter = Inter({
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Islah21 Alumni Directory",
-  description: "Official alumni directory of Islah21",
+  title: "Islah21 App",
+  description: "Official app for Islah21",
   keywords: "Islah21, alumni, directory",
   authors: { name: "Hengker" },
 };
