@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { AlumniTable } from "@/components/alumni-table";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
@@ -10,45 +11,82 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
-import { AlumniTable } from "@/components/alumni-table";
-import {
-	extractAlumniInfo,
-	type Alumni,
+import type {
+	Alumni,
+	AlumniMetadata,
 } from "@/services/alumni/alumni-schema";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 
-export function AlumniDirectory({ alumni }: { alumni: Alumni[] }) {
-	const [searchQuery, setSearchQuery] = useState("");
-	const [skillFilter, setSkillFilter] = useState("");
-	const [locationFilter, setLocationFilter] = useState("");
-	const [companyFilter, setCompanyFilter] = useState("");
+type Filters = {
+	name: string;
+	skills: string;
+	location: string;
+	company: string;
+};
 
-	const { companies, domiciles, skills } = extractAlumniInfo(alumni);
+const ALL_SENTINEL = "__all__";
 
-	const filteredAlumni = alumni.filter((alumni) => {
-		const matchesSearch =
-			searchQuery === "" ||
-			alumni.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			alumni.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			alumni.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			alumni.currentJob.toLowerCase().includes(searchQuery.toLowerCase());
+export function AlumniDirectory({
+	items,
+	totalCount,
+	page,
+	pageSize,
+	filters,
+	metadata,
+}: {
+	items: Alumni[];
+	totalCount: number;
+	page: number;
+	pageSize: number;
+	filters: Filters;
+	metadata: AlumniMetadata;
+}) {
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const [, startTransition] = useTransition();
+	const [name, setName] = useState(filters.name);
 
-		const matchesSkill =
-			skillFilter === "" || alumni.skills.includes(skillFilter);
-		const matchesLocation =
-			locationFilter === "" || alumni.domicile === locationFilter;
-		const matchesCompany =
-			companyFilter === "" || alumni.company === companyFilter;
+	useEffect(() => {
+		setName(filters.name);
+	}, [filters.name]);
 
-		return matchesSearch && matchesSkill && matchesLocation && matchesCompany;
-	});
+	useEffect(() => {
+		if (name === filters.name) return;
+		const handle = setTimeout(() => {
+			updateParams({ name });
+		}, 300);
+		return () => clearTimeout(handle);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [name]);
 
-	const resetFilters = () => {
-		setSearchQuery("");
-		setSkillFilter("");
-		setLocationFilter("");
-		setCompanyFilter("");
-	};
+	function updateParams(updates: Partial<Filters> & { page?: number }) {
+		const sp = new URLSearchParams(searchParams.toString());
+		for (const [key, rawValue] of Object.entries(updates)) {
+			const value = rawValue == null ? "" : String(rawValue);
+			if (value) {
+				sp.set(key, value);
+			} else {
+				sp.delete(key);
+			}
+		}
+		if (!("page" in updates)) {
+			sp.delete("page");
+		}
+		startTransition(() => {
+			router.replace(sp.toString() ? `/?${sp.toString()}` : "/");
+		});
+	}
+
+	function resetFilters() {
+		setName("");
+		startTransition(() => {
+			router.replace("/");
+		});
+	}
+
+	const hasActiveFilters =
+		filters.name || filters.skills || filters.location || filters.company;
 
 	return (
 		<div className="space-y-6">
@@ -57,85 +95,87 @@ export function AlumniDirectory({ alumni }: { alumni: Alumni[] }) {
 					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
 						<div className="lg:col-span-2">
 							<Input
-								placeholder="Search by name, email, position, or company..."
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
+								placeholder="Search by name..."
+								value={name}
+								onChange={(e) => setName(e.target.value)}
 								className="w-full"
 							/>
 						</div>
 
-						<div>
-							<Select
-								value={skillFilter}
-								onValueChange={(skill) =>
-									setSkillFilter(skill !== "all" ? skill : "")
-								}
-							>
-								<SelectTrigger>
-									<SelectValue placeholder="Skill" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="all">All Skills</SelectItem>
-									{skills.map((skill) => (
-										<SelectItem key={skill} value={skill}>
-											{skill}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-
-						<div>
-							<Select
-								value={locationFilter}
-								onValueChange={(location) =>
-									setLocationFilter(location !== "all" ? location : "")
-								}
-							>
-								<SelectTrigger>
-									<SelectValue placeholder="Location" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="all">All Locations</SelectItem>
-									{domiciles.map((location) => (
-										<SelectItem key={location} value={location}>
-											{location}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
-						<div>
-							<Select
-								value={companyFilter}
-								onValueChange={(company) =>
-									setCompanyFilter(company !== "all" ? company : "")
-								}
-							>
-								<SelectTrigger>
-									<SelectValue placeholder="Company" />
-								</SelectTrigger>
-								<SelectContent>
-									<SelectItem value="all">All Companies</SelectItem>
-									{companies.map((company) => (
-										<SelectItem key={company} value={company}>
-											{company}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						</div>
+						<FilterSelect
+							placeholder="Skill"
+							allLabel="All Skills"
+							value={filters.skills}
+							options={metadata.skills}
+							onChange={(v) => updateParams({ skills: v })}
+						/>
+						<FilterSelect
+							placeholder="Location"
+							allLabel="All Locations"
+							value={filters.location}
+							options={metadata.domiciles}
+							onChange={(v) => updateParams({ location: v })}
+						/>
+						<FilterSelect
+							placeholder="Company"
+							allLabel="All Companies"
+							value={filters.company}
+							options={metadata.companies}
+							onChange={(v) => updateParams({ company: v })}
+						/>
 					</div>
 
 					<div className="mt-4 flex justify-end">
-						<Button variant="outline" onClick={resetFilters}>
+						<Button
+							variant="outline"
+							onClick={resetFilters}
+							disabled={!hasActiveFilters}
+						>
 							Reset Filters
 						</Button>
 					</div>
 				</CardContent>
 			</Card>
 
-			<AlumniTable data={filteredAlumni} />
+			<AlumniTable
+				items={items}
+				page={page}
+				pageSize={pageSize}
+				totalCount={totalCount}
+			/>
 		</div>
+	);
+}
+
+function FilterSelect({
+	placeholder,
+	allLabel,
+	value,
+	options,
+	onChange,
+}: {
+	placeholder: string;
+	allLabel: string;
+	value: string;
+	options: string[];
+	onChange: (value: string) => void;
+}) {
+	return (
+		<Select
+			value={value || ALL_SENTINEL}
+			onValueChange={(next) => onChange(next === ALL_SENTINEL ? "" : next)}
+		>
+			<SelectTrigger>
+				<SelectValue placeholder={placeholder} />
+			</SelectTrigger>
+			<SelectContent>
+				<SelectItem value={ALL_SENTINEL}>{allLabel}</SelectItem>
+				{options.map((option) => (
+					<SelectItem key={option} value={option}>
+						{option}
+					</SelectItem>
+				))}
+			</SelectContent>
+		</Select>
 	);
 }

@@ -38,40 +38,44 @@ const alumniSheetSchema = z.object({
 	),
 });
 
-export function extractAlumniInfo(alumniList: Alumni[]) {
-	const domiciles: Set<string> = new Set();
-	const companies: Set<string> = new Set();
-	const allSkills: Set<string> = new Set();
+export type Alumni = z.infer<typeof alumniSheetSchema>;
+
+export type AlumniMetadata = {
+	domiciles: string[];
+	companies: string[];
+	skills: string[];
+};
+
+export type ParsedAlumni = {
+	data: Alumni[];
+	metadata: AlumniMetadata;
+};
+
+function extractAlumniMetadata(alumniList: Alumni[]): AlumniMetadata {
+	const domiciles = new Set<string>();
+	const companies = new Set<string>();
+	const skills = new Set<string>();
 
 	for (const alumnus of alumniList) {
-		if (alumnus.domicile) {
-			domiciles.add(alumnus.domicile);
-		}
-		if (alumnus.company) {
-			companies.add(alumnus.company);
-		}
+		if (alumnus.domicile) domiciles.add(alumnus.domicile);
+		if (alumnus.company) companies.add(alumnus.company);
 		for (const skill of alumnus.skills) {
-			if (skill) {
-				allSkills.add(skill);
-			}
+			if (skill) skills.add(skill);
 		}
 	}
 
 	return {
-		domiciles: Array.from(domiciles),
-		companies: Array.from(companies),
-		skills: Array.from(allSkills),
+		domiciles: Array.from(domiciles).sort(),
+		companies: Array.from(companies).sort(),
+		skills: Array.from(skills).sort(),
 	};
 }
-
-export type Alumni = z.infer<typeof alumniSheetSchema>;
 
 function normalizeAndValidateUrl(input: string) {
 	try {
 		const hasProtocol = /^https?:\/\//i.test(input);
 		const url = new URL(hasProtocol ? input : `https://${input}`);
 
-		// Optional: reject IPs, localhost, or non-TLDs
 		if (
 			!url.hostname.includes(".") ||
 			/^(localhost|127\.|0\.0\.0\.0)/.test(url.hostname)
@@ -80,7 +84,7 @@ function normalizeAndValidateUrl(input: string) {
 		}
 
 		return url.href;
-	} catch (error) {
+	} catch {
 		return null;
 	}
 }
@@ -98,11 +102,11 @@ function parseLink(type: Link, value: string): string | string[] {
 	return value;
 }
 
-export function parseSheetData(data: string[][]): Alumni[] {
+export function parseSheetData(data: string[][]): ParsedAlumni {
 	const [headers, ...rows] = data;
 
-	return rows.map((row) => {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	const alumni = rows.map((row) => {
+		// biome-ignore lint/suspicious/noExplicitAny: dynamic sheet row shape, validated by Zod below
 		const rowData: Record<string, any> = {};
 		const links: Array<{ type: Link; value: string | string[] }> = [];
 
@@ -111,7 +115,10 @@ export function parseSheetData(data: string[][]): Alumni[] {
 			const value = row[index] || "";
 
 			if (key === "skills") {
-				rowData[key] = value.split(",").map((item) => item.trim());
+				rowData[key] = value
+					.split(",")
+					.map((item) => item.trim())
+					.filter(Boolean);
 			} else if (LINKS.includes(key as Link) && value !== "") {
 				const type = key as Link;
 
@@ -143,22 +150,27 @@ export function parseSheetData(data: string[][]): Alumni[] {
 
 		return alumniSheetSchema.parse(rowData);
 	});
+
+	return {
+		data: alumni,
+		metadata: extractAlumniMetadata(alumni),
+	};
 }
 
 export const getAlumniSchemaParams = z.object({
-	page: z.coerce // coerce attempts to convert the type (e.g., string from URL to number)
+	page: z.coerce
 		.number()
 		.int("Page must be an integer")
 		.min(1, "Page must be at least 1")
 		.optional()
-		.default(1), // Default page is 1 if not provided
+		.default(1),
 	pageSize: z.coerce
 		.number()
 		.int("PageSize must be an integer")
 		.min(1, "PageSize must be at least 1")
-		.max(100, "PageSize cannot exceed 100") // Add a reasonable max limit
+		.max(100, "PageSize cannot exceed 100")
 		.optional()
-		.default(10), // Default page size is 10
+		.default(10),
 	name: z.string().optional().default(""),
 	skills: z.string().optional().default(""),
 	location: z.string().optional().default(""),
